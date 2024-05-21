@@ -18,6 +18,6 @@
 	
 ** @RestController above class MainAPIPoint then @GetMapping("api")
    - @GetMapping("api")
-   -	public List<Student> getStudent(){
+   -	public List<Student> getStudent() { 
    -		return student;
    -	}
