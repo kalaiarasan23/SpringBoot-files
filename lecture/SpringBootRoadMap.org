@@ -1,0 +1,75 @@
+* Spring Boot Road Map
+** spring framework
+*** core
+**** Bean lifecycle
+**** Dependency injection
+**** Inversion of Control
+**** Bean Factory & Application Context
+
+*** Web
+**** Different Annotations
+**** MVC Structure
+**** Configuration
+**** Integrating different Libraries/ Frameworks (cashing frameworks, hibernate)
+**** Profiles
+
+*** AOP (Aspect orientation programming) 
+**** How AOP works
+**** Creating PointCut, Join point, Aspect etc
+
+** Spring Security
+*** Authentication
+*** Authorization
+*** OAuth2
+*** Form Authentications
+*** JWT
+
+** Spring boot
+*** Importance of Springboot
+*** Auto Configuration
+*** Adding Configuration
+*** Properties/Yaml
+*** Integration with other Liberies/Frameworks
+*** REST API
+**** HTTP Methods 
+     - POST
+     - GET
+     - PUT
+     - DELETE
+     - OPTION
+     - TRACE
+**** HTTP Status codes
+     - 1xx
+     - 2xx
+     - 3xx
+     - 4xx
+     - 5xx
+
+** DATABASE
+*** SQL (mysql, postgreSQL)
+*** NoSQL (MongoDB)
+*** Spring data (Spring Data JPA, Spring Data MongoDB, Spring Data JDBC)
+
+** MicroServers
+*** Spring Cloud
+**** Spring Cloud Gataway
+**** Spring Cloud Config
+**** Spring Circuit Breaker
+**** Spring Cloud OpenFeign
+**** Spring Cloud Sleuth
+**** Other Spring Cloud Projects (Based on Requirement)
+
+*** MicroServices Patterns
+**** Aggregator
+**** CQRS
+**** SAGA
+**** Event Sourcing
+
+*** DevOPs
+**** Dockers
+**** Kubernetes
+**** Cloud
+***** AWS
+***** GCP
+***** AZURE
+

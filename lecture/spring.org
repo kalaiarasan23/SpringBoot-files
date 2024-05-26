@@ -1,0 +1,308 @@
+** springframe
+*** Open source
+   - spring framework is an open-source framework for building enterprise java application.
+
+*** Features
+   - Aims to simplify the complex enterprise. Java application development. such as(DI,AOp)
+
+*** Lightweight
+   - spring framework is a collection of sub-spring framework (spring MVC, spring ORM, spring webflow).
+
+** Core features
+*** IOC container
+    - one of the core feature of spring framework. IOC provide steam line way to configure and manage java object.
+    - This container is reponsible for managing the life cycle of a defined java object significantly increasing the configurability of spring based application.
+    - IOC use DI(dependency injection) to provide the object reference during runtime.
+
+*** AOP (Aspect Oriented Programming)
+    - it aims to provide more modularity to the cross cutting concerns
+    - which functions that span across the application
+    - such as logging,caching, transaction management, authentication and 
+
+*** DAF (Data Access Framework)
+    - spring simplifies the database communication process
+    - by providing direct support for popular data access framework in java
+    - such as JDBC, hibernation, JPA (java persistance Access).
+    - Resource Management, Exception handling and resource wrapping for all the supported data access frameworks.
+
+*** MVC
+    - Spring MVC enables developers to create application using the MVC pattern.
+    - It is a request based framework that allows developers to easily create customized MVC implementations
+    - The core components of spring MVC is Dispatcher servlet class which handles user requests and then forward them to the correct controller.
+    - This allows the controller to process the request create the model and then provide the information for the end user via a specified.
+
+** Spring bean
+**** Object
+    - An object that is managed by the spring framework in java application.
+    - Spring bean refers to object.
+    - The term bean is used in the context of the spring framework.
+
+**** Features
+    - Aims to simplify the complex enterprise java application development.
+    - the spring framework creates these beans manage their life cycle and organizes their dependencies with other beans.
+    - It takes care of the instantiation configuration and wiring up of objects
+    - saving developers from a lot of manual.
+
+**** Configuration
+    - Spring Beans can be configured using XML, java annotations or java code.
+
+*** Life cycle of a Spring Bean
+
+**** Object lifecycle
+     - The lifecycle of any object means when and how it is born, how it behaves throughout its life,and when and how it dies.
+
+**** Bean LifeCycle
+     - Bean life cycle is managed by the spring container.
+     - When we run the program, 
+       - the first of all the spring container gets started
+       - after that the container created the instance of bean as for request and then dependencies are injected
+       - and finally the bean is destoryed, when the spring container is closed.
+
+** how to configure a bean - @Configuration
+*** @Configuration declares class as "full" configuration class.
+    - Class must be non-final and public.
+
+*** @Bean declares bean configuration inside configuration class.
+    - Method must be non-final and non-private(public or protected or default).
+
+*** Code single beans 
+#+BEGIN_SRC java
+@Configuration
+public class AppConfig {
+    @Bean
+     public PaymentService paymentService(AccountRepository account) {
+         return new PaymentServiceImpl(account); 
+     }
+ }
+#+END_SRC
+
+*** code for Multiple beans
+#+BEGIN_SRC java
+@Configuration
+ public class AppConfig {
+    @Bean
+    public PaymentService paymentService()  {
+        return new PaymentServiceImpl(accountRepository());
+    }
+ 
+    @Bean
+    public AccountRepository accountRepository() {
+        return new JdbcAccountRepository(dataSource());
+    }
+ 
+    @Bean("ds")
+    public DataSource dataSource() {
+         return (...)
+    }
+ }
+#+END_SRC
+** Spring Component sample
+   - Spring Component contains class-level annotation that marks class as Spring Component (@Component)
+   - Constructor-dependency injection is automatically done using @AutoWired by injecting the Constructor parameters
+   - @AutoWired on Constructor is optional if there is only one constructor.
+
+*** Code 
+#+BEGIN_SRC java
+@Component
+ public class PaymentServiceImpl {
+    private final AccountRepository accountRepository;
+ 
+    @AutoWired
+    public PaymentServiceImple(AccountRepository accountRepository)
+       this.accountRepository = accountRepository;
+    }
+    }
+#+END_SRC
+
+*** spring Components
+    - Spring provides component stereotype to classify classes as Spring Components.
+      - Sub-types are available as a refinement for the standard components.
+    - @Component as a general component annotation indicating that the class should be initialized, configured and managed by the core container.
+    - @Repository, @Service and @Controller as meta-annotation for @Component that allows to further re-fine components.
+    - Own stereotype annotations can (and should) be defined to support general architecture principles.
+** Bean naming
+*** Example of same code in @Component, multiple code example
+#+BEGIN_SRC java
+@Configuration
+ public class AppConfig {
+    @Bean
+    public PaymentService paymentService()  {
+        return new PaymentServiceImpl(accountRepository());
+    }          
+ 
+   @Bean
+   public AccountRepository accountRepository() {
+        return new JdbcAccountRepository(dataSource());
+   }
+ 
+   @Bean("ds")
+   public DataSource dataSource() {
+        return (...)
+   }
+ }
+#+END_SRC
+
+** Beans injection   
+*** Dependency injection
+**** Construction injection 
+     - Constructoe parameter to receive dependencies during Bean Construction
+       
+***** code 
+#+BEGIN_SRC java
+ @Service 
+ public class DefaultPaymentService {
+    private final AccountRepository accountRepository;
+        public DefaultPaymentService( AccountRespository accountRepository) {
+             this.accountRepository = accountRepository;  // it automatically injected bean
+        }
+ }   
+  // we have repository 
+@Repository
+ public class JdbcAccountRepository implements AccountRepository {
+     private final DataSource dataSource;
+       
+      public JdbcAccountRepository(DataSource dataSource) {
+          this.dataSource = dataSource;
+       }
+}
+#+END_SRC
+
+***** we can specify or we can tell spring which bean to inject
+	- for this one we can use the annotaion called @Qualifier
+
+****** code for @Qualifer with 
+#+BEGIN_SRC java
+@Configuration 
+public class ApplicationConfig {
+ 
+   @Bean
+   @Qulifier("primary")
+   public AccountRepository primary() {
+      return new JdbcAccountRepository(...);
+   }
+
+    @Bean
+    @Qulifier("secondary")
+    public AccountRepository secondary() {
+       return new JdbcAccountRepository(...);
+    }
+ }
+
+@Service 
+public class DefaultPaymentService {
+  
+   @AutoWired
+    public DefaultPaymentService(@Qualifier() AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+}
+#+END_SRC
+
+*****  @Primary
+	 - if we want to define a bean as primary
+	 - we can use the primary annotation to Define which be primary for spring to be injected.
+	 - here we don't need for qualifier annotation, we use primary annotation
+
+****** code - same code like @qualifier but here we choose @primary as qualifier
+#+BEGIN_SRC java
+@Configuration
+public class ApplicationConfig {
+     
+    @Bean
+    @Primary
+    public AccountRepository primary() {
+        return new JdbcAccountRepository(...);
+    }
+
+    @Bean
+    public AccountRepository secondary() {
+        return new JdbcAccountRepository(...);
+    }
+}
+
+// now we want to inject a bean of type account repository.
+// to inject it, use construtor or the field and spring will know automatically 
+@Service
+public class DefaultPaymentService {
+  @AutoWired
+   public DefaultPaymentService(AccountRepository acccountRepository) {
+      this.accountRepository = accountRepository;
+   }
+}
+#+END_SRC
+
+**** Field injection  14:01 
+     - field definition to receieve dependency injected with the reflection axis also called field injection.
+     - Field injection allows direct injection into field declaration without constructor or method delegation.
+***** Discouraged: Makes testing of components in isolation more complex, therefore should only be used in test classes.
+***** example code
+#+BEGIN_SRC java
+@Service
+public class DefaultPaymentService {
+    @AutoWired
+    private AccountRepository accountRepository;
+#+END_SRC
+**** configuration methods or method injection
+     - one or many parameters receiving dependencies through method parameters also called method injection.
+     - Method injection allows setting one or many dependencies by one method.
+     - Allows for initialization work if needed while receiving dependencies.
+
+***** code  
+#+BEGIN_SRC java
+@service
+public class DefaultPaymentService {
+    @AutoWired //method injection
+    public void configureClass(AccountRepository accountRepository, FeeCalculator feeCalculator) {
+       //.....
+    }
+#+END_SRC
+
+**** Setter injection or setter method injection
+     - java setter methods are specialized configuration method with only one parameter and a define name scheme called also setter injection so the injection target can be referred using two different modes typr injection injects an object od matching type or name injection injects any object by name.
+     - Setter injection follows java bean naming convention to inject dependency
+
+***** code
+#+BEGIN_SRC java
+@Service
+public class DefaultPaymentService {
+    @AutoWired  // setter injection
+    public void setAccountRepository(AccountRepository accountRepository)
+    {    //....... }
+}
+#+END_SRC
+
+**** Official Recommendation 21.00
+** Bean scoping
+*** 
+*** 
+*** 
+
+**** Scope of  
+***** Singleton
+      - It a default spring scope container.
+      - Only one instance of the Bean is created and all requests of that bean will recieve the same instance.
+      - This is useful for bean that do not hold state or
+      - where the same state is to be shared by all users or threads.
+***** ProtoType
+      - new instance is created each time, when a bean is requested from the container.
+      - This is useful for beans to carry state that is specific to other user or thread and thus can't be shared.
+***** Request
+      - This scope is only valid in the context of web over spring application context for a single HTTP request.
+      - A new Bean is created for each HTTP request.
+      - Then we have session so that scope is also valid only one the context of webware spring application context of an HTTP session.
+      - It's different from the request so the HTTP request or the request scope is availible for the HTTP request.
+      - And the session is for HTTP session.
+      - This means a new Bean is created for each HTTP session by the container
+***** Session
+***** Application
+***** WebSocket
+      - This scope only valid only in the context of webware spring application context for the life cycle of a websocket.
+      - The Bean is scoped at the web socket level.
+      - So, Bean scoping is really important, if you want to correctly manage your bean.
+
+** Special spring beans
+*** Enviroment Abstraction
+*** Bean Profiles
+***
+*** 
+** @ value Annotation

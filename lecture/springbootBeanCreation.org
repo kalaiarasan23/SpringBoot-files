@@ -1,0 +1,496 @@
+* Spring Boot 
+  - Spring boot is an approach to develop Spring based applications with very less or no configurations.
+  - Spring boot provides a set of starter(POM, gradle for project requirements and auto configuration).
+  - Spring boot many auto configuration, so depending on libraries and auto matically configure the required classes.
+    
+* Why Spring boot
+  - standalone application
+  - Embeded server (Tom cat)
+  - Starters
+  - Auto configuration
+  - Production ready feature
+  - no xml configuration
+
+* how to create a bean in springboot starter project 
+  - we have main class for create a bean we create an another class name firstClass.
+  - class have one method helloSay() and display an method.
+
+* create an object without using bean annotation or new keyword
+#+BEGIN_SRC java
+@SpringBootApplication
+public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(YoutubeProject1Application.class, args);
+		FirstClass firstClass = new FirstClass();       // we use here new keyword configuration
+		firstClass.helloSay();
+	}
+}
+
+public class MyFirstClass {
+	void helloSay()
+	{
+		System.out.println("hello world");
+	}
+}
+
+#+END_SRC
+
+** create an object using bean annotation
+#+BEGIN_SRC java
+@SpringBootApplication
+public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var context = SpringApplication.run(YoutubeProject1Application.class, args);
+		FirstClass firstClass = context.getBean(MyFirstClass.class);     // instead of new keyword we use getBean Context method
+		firstClass.helloSay();
+	}
+
+	@Bean
+	public MyFirstClass myFirstClass() {
+	   return new MyFirstClass();
+	}
+	
+}
+
+public class MyFirstClass {
+	void helloSay()
+	{
+		System.out.println("hello world");
+	}
+}
+
+#+END_SRC
+
+* Create project using Component
+  - @bean annotation must be use new keyword inside a method for creating bean.
+  - so we can use @Compount in FirstClass and remove the method in main class.
+
+** code
+#+BEGIN_SRC java
+ public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var context = SpringApplication.run(YoutubeProject1Application.class, args);
+		FirstClass firstClass = context.getBean(MyFirstClass.class);
+		firstClass.helloSay();
+	}
+}
+
+@Component
+public class MyFirstClass {
+	void helloSay()
+	{
+		System.out.println("hello world");
+	}
+}
+#+END_SRC
+
+* using @Configuration and @bean
+** code
+#+BEGIN_SRC java
+ public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var context = SpringApplication.run(YoutubeProject1Application.class, args);
+		FirstClass firstClass = context.getBean(myFirstClass.class);
+		firstClass.helloSay();
+	}
+}
+
+public class MyFirstClass {
+	void helloSay()
+	{
+		System.out.println("hello world");
+	}
+}
+
+@Configuration
+public class DemoConfig {
+	
+	@Bean
+	public MyFirstClass myFirstClass() {
+		return new MyFirstClass();
+	}
+}
+#+END_SRC
+
+** we can use the @Configuration as @bean method name as in context.getBean(methodName,classname)
+
+#+BEGIN_SRC java
+ public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var context = SpringApplication.run(YoutubeProject1Application.class, args);
+		FirstClass firstClass = context.getBean("myFirstClass",MyFirstClass.class);
+		firstClass.helloSay();
+	}
+}
+
+@Component
+public class MyFirstClass {
+	void helloSay()
+	{
+		System.out.println("hello world");
+	}
+}
+
+@Configuration
+public class DemoConfig {
+	
+	@Bean
+	public MyFirstClass myFirstClass() {
+		return new MyFirstClass();
+	}
+}
+
+#+END_SRC
+
+** we can assign parameter on constructor in MyFirstClass and configurate in Config class
+#+BEGIN_SRC java
+ public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var context = SpringApplication.run(YoutubeProject1Application.class, args);
+		FirstClass firstClass = context.getBean("myFirstClass",MyFirstClass.class);
+		firstClass.helloSay();
+	}
+}
+
+@Component
+public class MyFirstClass {
+        private String name;
+
+	MyFirstClass(String name){
+	    this.name = name;
+	}
+
+	void helloSay()
+	{
+		System.out.println("hello world");
+	}
+}
+
+@Configuration
+public class DemoConfig {
+	
+	@Bean
+	public MyFirstClass myFirstClass() {
+		return new MyFirstClass("name");
+	}
+}
+
+#+END_SRC
+
+* use myFirstClass in service class by using autoWired
+  - we create a service class and declare the private MyFirstClass variable without initialize
+  - then use the MyFirstClass members in service class.
+  - use @AutoWired in private MYFirstClass variable.
+
+** code 
+#+BEGIN_SRC java
+ public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var context = SpringApplication.run(YoutubeProject1Application.class, args);
+		ServiceClass firstClass = context.getBean("myFirstClass",MyFirstClass.class);
+		firstClass.hello();
+	}
+}
+
+// if we use @Component then we want to choose @Primary
+public class MyFirstClass {
+
+        private String name;
+	// imp thing set zero argument constructure
+	public MyFirstClass(){}
+	
+	public MyFirstClass(String name) {
+	     this.name = name;
+	}
+	String helloSay()
+	{
+		return "hello world "+name;
+	}
+}
+
+@Configuration
+public class DemoConfig {
+	
+	@Bean
+	public MyFirstClass myFirstClass() {
+		return new MyFirstClass("name");
+	}
+}
+
+@Service 
+public class ServiceClass {
+    @Autowired
+    private MyFirstClass myFirstClass;
+    
+    public String method(){
+        return "good ";
+    }
+}
+
+#+END_SRC
+
+** If we use 2 @Bean annotation in @Configuration. We use @Primary annotation or @Qualifier
+*** if we not use @Primary, we got this error
+**** Field myfirstClass in com.example.demo.ServiceClass required a single bean, but 2 were found:
+	- myFirst: defined by method 'myFirst' in class path resource [com/example/demo/DemoConfig.class]
+	- mySecond: defined by method 'mySecond' in class path resource [com/example/demo/DemoConfig.class]
+
+*** code with @Primary
+#+BEGIN_SRC java
+@Configuration
+public class DemoConfig {
+	
+	@Bean
+	MyFirstClass myFirst()
+	{
+		return new MyFirstClass("name");
+	}
+	
+	@Bean
+	@Primary
+	MyFirstClass mySecond()
+	{
+		return new MyFirstClass("Second");
+	}
+}
+#+END_SRC
+
+*** TODO using Qualifier Annotation
+    - get Qualifier for 2 bean annotation as Qualifier("bean1") and Qualifier("bean2")
+    - Go to ServiceClass, and inject the @Qualifer("bean2") in constructor argument.
+
+**** code for write @Qualifier name in Configuation or bean class and call @Qualifier from the service class constructor
+#+BEGIN_SRC java
+@SpringBootApplication
+public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var ctx = SpringApplication.run(YoutubeProject1Application.class, args);
+		ServiceClass myFirstClass = ctx.getBean(ServiceClass.class);
+		System.out.println(myFirstClass.method());
+	}
+}
+
+@Configuration
+public class DemoConfig {
+	
+	@Bean
+	@Qualifier("bean1")
+	MyFirstClass myFirst()
+	{
+		return new MyFirstClass("name");
+	}
+	
+	@Bean
+	@Qualifier("bean2")
+	MyFirstClass mySecond()
+	{
+		return new MyFirstClass("Second");
+	}
+}
+
+// in service class we can we method name or define the @Qualifier and 
+@Service
+public class ServiceClass {
+	
+		private MyFirstClass myfirstClass;
+	 
+	 	public ServiceClass(@Qualifier("bean1") MyFirstClass myFirstClass) {
+			// TODO Auto-generated constructor stub
+	 		this.myfirstClass =myFirstClass;
+		}
+		
+ 		public String method()
+		{
+			
+			return "good "+myfirstClass.helloSay();
+		}
+}
+
+#+END_SRC
+**** code for write @Qualifier("ConfigurationMethodName") in service class constructor
+#+BEGIN_SRC java
+@SpringBootApplication
+public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var ctx = SpringApplication.run(YoutubeProject1Application.class, args);
+		ServiceClass myFirstClass = ctx.getBean(ServiceClass.class);
+		System.out.println(myFirstClass.method());
+	}
+}
+
+@Configuration
+public class DemoConfig {
+	
+	@Bean
+	MyFirstClass myFirst()
+	{
+		return new MyFirstClass("name");
+	}
+	
+	@Bean
+	MyFirstClass mySecond()
+	{
+		return new MyFirstClass("Second");
+	}
+}
+
+// in service class we use Qualifier(method name) 
+@Service
+public class ServiceClass {
+	
+		private MyFirstClass myfirstClass;
+	 
+	 	public ServiceClass(@Qualifier("myFirst") MyFirstClass myFirstClass) {
+			// TODO Auto-generated constructor stub
+	 		this.myfirstClass =myFirstClass;
+		}
+		
+ 		public String method()
+		{
+			
+			return "good "+myfirstClass.helloSay();
+		}
+}
+
+#+END_SRC 
+
+** field injection is used @Autowired so no need to create a constructor of service class. IMPORTANT: Don't create construction for @Autowired
+*** code use bean("name") in service class as @Autowired then @Qualifier("name") in field or class variable
+#+BEGIN_SRC java
+@SpringBootApplication
+public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var ctx = SpringApplication.run(YoutubeProject1Application.class, args);
+		ServiceClass myFirstClass = ctx.getBean(ServiceClass.class);
+		System.out.println(myFirstClass.method());
+	}
+}
+
+// changes here 
+@Service
+public class ServiceClass {
+		
+		@Autowired
+		@Qualifier("mySecond") // use method name of configuration here
+		private MyFirstClass myfirstClass;
+	 		
+ 		public String method() {
+			return "good "+myfirstClass.helloSay();
+		}
+}
+
+@Configuration
+public class DemoConfig {
+	
+	@Bean
+	MyFirstClass myFirst(){
+		return new MyFirstClass("name");
+	}
+	
+	@Bean
+	MyFirstClass mySecond()	{
+		return new MyFirstClass("Second");
+	}
+}
+
+#+END_SRC
+
+*** use bean("name") in qualifier
+#+BEGIN_SRC java
+@SpringBootApplication
+public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var ctx = SpringApplication.run(YoutubeProject1Application.class, args);
+		ServiceClass myFirstClass = ctx.getBean(ServiceClass.class);
+		System.out.println(myFirstClass.method());
+	}
+}
+
+// changes here 
+@Service
+public class ServiceClass {
+		
+		@Autowired
+		@Qualifier("name") // use bean name of configuration here
+		private MyFirstClass myfirstClass;
+	 		
+ 		public String method() {
+			return "good "+myfirstClass.helloSay();
+		}
+}
+
+@Configuration
+public class DemoConfig {
+	
+	@Bean("bean1") // use this in service class qualified
+	MyFirstClass myFirst(){
+		return new MyFirstClass("name");
+	}
+	
+	@Bean
+	MyFirstClass mySecond()	{
+		return new MyFirstClass("Second");
+	}
+}
+
+#+END_SRC
+
+** method injection
+*** same as above example autowired at method
+
+** Setter injection
+   - create a setter method.
+
+** Special bean injection 
+*** Environment set 
+#+BEGIN_SRC java
+public class MyFirstClass {
+	private Environment env;
+	
+	public String getEnv() {
+		return env.getProperty("java.version");
+	}
+	@Autowired
+	public void setEnv(Environment env) {
+		this.env = env;
+	}
+
+	public String getOSName() {
+		return env.getProperty("os.name");
+	}
+}
+
+@SpringBootApplication
+public class YoutubeProject1Application {
+
+	public static void main(String[] args) {
+		var ctx = SpringApplication.run(YoutubeProject1Application.class, args);
+		MyFirstClass myFirstClass = ctx.getBean(MyFirstClass.class);
+		System.out.println(myFirstClass.getEnv());
+		System.out.println(myFirstClass.getOSName());
+	}
+}
+#+END_SRC
+
+**** custom properties
+     - Go to resources-> application.properties click.
+     - my.property = goodcode. This is write on application.properties
+
+** code in pojo class
+#+BEGIN_SRC java
+      public String getCustomProp() {
+		return env.getProperty("my.property");
+	}
+#+END_SRC
+
