@@ -1,0 +1,228 @@
+* Bean
+   Object that are managed by frameworks are known as beans.
+   
+** When we work with bean we should have bean definition   
+  - A bean definition includes configuration metadata that the container needs to know to create and manage the bean. 
+
+** Bean Configuration
+  - Bean definiton can be provided in various ways, including XML configuration files, annotations and Java-based configuration.
+  - Bean are configured using XML files, where each bean is defined within <bean> tags with attributes specifing class, properties and dependenies.
+    #+Begin_src XML
+       <?xml version="1.0" encoding="UTF-8"?>
+       <beans xmlns="http://www.springframework.org/schema/beans"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+          <bean id="mybean" class="les1_CreateBean.MyBean">
+             <properties>
+      	  </bean>
+       </beans>
+    #+End_src
+  - Beans can be configured using annotations like @Component, @Service, @Repository, etc, which are scanned by spring and managed as beans.
+      
+** LifeCycle of Beans
+   Instatiation ----> Population of Properties ----> Initialzation ----> Ready for use ----> Destruction
+
+* DI (Dependency Injection)
+  - DI is a design pattern used in software development to achieve loose coupling between classes by removing the direct dependency instantiation from the dependent class itself.
+** Two Types of DI
+  + Constructor Injection
+  + Setter Injection
+
+*** Constructor Injection
+  - Dependencies are provided to the dependent class through its constructor.
+  - Dependencies are passed as arguments to the construtor when the dependent class is instantiated.
+  - Constructor injection ensures that the dependencies are available when the object is created.
+
+**** Code Explaination
+  1) Specification class
+     - String make and model
+     - Getter and setter and toString methods
+	
+  2) car class
+     - Car class dependent on Specification class, so we create Specification object.
+     - create initiation by constructor.
+
+  3) xml file for project structure
+     1. copy and paste the boilerPlate
+     2. bean id = "spec" and class = "com.example.demo.constructor.injection.Specification" copy and paste from the package.
+	- property name = "field_Name" value ="name"
+	- property name = "make" value ="TATA"
+	- property name = "model" value ="Nano"
+	- Close the bean tag
+     3. bean id = "My car" and class= "com.example.demo.constructor.injection.Car" copy and paste from the package.
+	- Car need the specification as a injection.
+	- construtor-arg ref ="spec" />
+              
+***** Code
+#+Begin_src java
+
+      public class Specification {
+
+	      String make,model;
+
+	      public String getMake() {
+		      return make;
+	      }
+
+	      public void setMake(String make) {
+		      this.make = make;
+	      }
+
+	      public String getModel() {
+		      return model;
+	      }
+
+	      public void setModel(String model) {
+		      this.model = model;
+	      }
+
+	      @Override
+	      public String toString() {
+		      return "Specification [make=" + make + ", model=" + model + "]\n";
+	      }
+      }
+
+      public class Car {
+	    Specification sp ;
+
+	    public Car(Specification sp) {
+		    super();
+		    this.sp = sp;
+	    }
+
+	    void printDetail() {
+		    System.out.println("car details "+sp.toString());
+	    }
+    }
+
+    public class Main {
+
+	  public static void main(String[] args) {
+		  ApplicationContext context = new ClassPathXmlApplicationContext("constructionInjection.xml");
+		  Car myCar = (car) context.getBean("Car"); // bean of class Car and id is car, same name(car) is apply in bean id 
+		  myCar.printDetail();
+	  }
+    }
+
+  // conjectorInjectio.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="carSpecification" class="com.example.demo.constructor.injection.Specification">
+	<property name="make" value="Toyota" />
+	<property name="model" value="Corolla"/>
+</bean>
+
+<bean id="Car" class="com.example.demo.constructor.injection.Car">
+	
+	<constructor-arg ref="carSpecification">	</constructor-arg>   // ref and Specification class bean id are same in constructor injection
+		
+</bean>
+</beans>
+
+
+#+End_src
+
+*** Setter Injection
+  - Dependencies are provided to the dependent class through its setter.
+  - Dependencies are passed as arguments to the setter when the dependent class is instantiated.
+  - setter injection ensures that the dependencies are available when the object is created.
+
+**** Code Explaination
+  1) Specification class
+     - String make and model
+     - Getter and setter and toString methods
+	
+  2) car class
+     - Car class dependent on Specification class, so we create Specification object.
+     - different is we create setter for specification class.
+
+  3) xml file for project structure
+     1. copy and paste the boilerPlate
+     2. bean id = "spec" and class = "com.example.demo.setter.injection.Specification" copy and paste from the package.
+	- property name = "field_Name" value ="name"
+	- property name = "make" value ="TATA"
+	- property name = "model" value ="Nano"
+	- Close the bean tag
+     3. bean id = "My car" and class= "com.example.demo.constructor.injection.Car" copy and paste from the package.
+	- Car need the specification as a injection.
+	- <property name = "name give in car field" ref ="same name of specification id">
+	- <property name ="sp" ref = "spec" />
+	   
+***** code
+#+Begin_src java
+	  public class Specification {
+
+		String make,model;
+
+		public String getMake() {
+			return make;
+		}
+
+		public void setMake(String make) {
+			this.make = make;
+		}
+
+		public String getModel() {
+			return model;
+		}
+
+		public void setModel(String model) {
+			this.model = model;
+		}
+
+		@Override
+		public String toString() {
+			return "Spec [make=" + make + ", model=" + model + "]\n";
+		}
+	}
+
+	public class Car {
+	      Specification sp ;
+
+	      public void setSp(Specification sp) {
+		      this.sp = sp;
+	      }
+
+	      void printDetail() {
+		      System.out.println("car details "+sp.toString());
+	      }
+      }
+
+      public class SetterMain {
+
+	    public static void main(String[] args) {
+		    ApplicationContext context = new ClassPathXmlApplicationContext("setterInjector.xml");
+		    Car myCar = (Car) context.getBean("myCar");
+		    myCar.printDetail();
+	    }
+    }
+
+    // setterInjector.xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+	  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="carSp" class="com.example.demo.setter.injection.Specification">
+	  <property name="make" value="Toyota" />
+	  <property name="model" value="Corolla" />
+  </bean>
+
+  <bean id="myCar" class="com.example.demo.setter.injection.Car">
+	  <property name="sp" ref="carSp" />	// don't use value in property, it show BeanCreationExeception
+		
+  </bean>
+      </beans>
+#+End_src
+
+** value vs ref 
+
+* Autowiring
+   - we use .xml file to bean management
+   - but with the autowiring spring can be automatically resolves and injects dependencies.
+   - Without requiring explicit wiring definitions in XML or java configuration.

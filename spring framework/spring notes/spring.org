@@ -1,0 +1,229 @@
+* Why we need web framework?
+   - Websites have lot in common.
+   - Security, Databases, URLs, Authentication and more.
+   - Should you do this everytime from scratch?
+
+* What is Web Framework.
+   - it a collection of tools and modules that is needed to do standard tasks across every web application.
+   - It has some set of things already configured that can make lot faster and reduce the boiler plate codes.
+   - we can focus on business logic rather than boilerplate codes and setting some configuration.
+
+** Popular web frameworks
+   + Spring Boot(java)
+   + Django (Python)
+   + Flask (Python)
+   + Express (Javascript)
+   + Ruby on Rails (Ruby)
+
+* Spring Framework
+   - Spring simplifies enterprise application development, which reduce the complex and heavyweight Java Enterprise Edition Stack (JEE) stack
+** key principles
+   - Simplicity
+   - modularity (due to loose coupling)
+   - Testability 
+
+** Key Components of Spring
+   + Core Spring FrameWork (DI,AOP,transaction management).
+   + Spring boot(Project of Spring EcoSystem further reduce the process of spring framework).
+   + Spring Data (different Databases).
+   + Spring Security (autheritation, autantication)
+   + spring Cloud 
+       
+** 
+   * microservices
+   * web developement
+
+* Tight Coupling and Loose Coupling
+** Coupling
+   - Coupling refers to how closely connected different components or systems.
+** Tight Coupling
+   - Tight coupling describes a scenario where software components are highly dependent on eachother.
+   - Changes in one component will also change in other component.
+   - it is more rigid and harder to maintain.
+** Loose Coupling
+   - Tight coupling describes a scenario where software components are highly dependent on eachother.
+   - It make your system more flixible and easier to modify or extend.
+**** Example
+     - If i have interface that used to interact with database.
+     - if we modify the interface, we can slight modification behind the interface.
+     - This will not affect rest of the applications.
+**** Imp in
+        + Flexiblity and Maintainability
+	+ Scalability
+	+ testing (indepenently)
+** Achieving loose coupling
+   - Interfaces and Abstaction (Contracts between components hiding the implementation details).
+   - Dependency injection. (Components are passed from an external source rather then create internally).
+   - Event Driven architecture.
+
+* Coding
+** Tight coupling
+#+Begin_src java
+  public class UserDB {
+	String getUsername(){
+		return "user name";
+	}
+  }
+
+  public class UserManager {
+	  UserDB userDB = new UserDB();
+	String GetUserManager() {
+		return userDB.getUsername(); // Usermanager is depands on UserDB
+	}
+  }
+
+  
+public class MainClass {
+
+	public static void main(String[] args) {
+		UserManager userManager = new UserManager();
+		System.out.println(userManager.GetUserManager());
+		
+	}
+
+}
+#+End_src
+
+*** UserManger class is depands on UserDB class (getUserDB). If we megrate to some other DB we will change the code in UserManager class.
+*** The coupling happens in UserManager class, UserDB userDB = new UserDB();
+
+** Loose coupling
+  - For loose coupling, we prefer Interface and implement in the UserDB class
+  - Initialize in the UserManager class by constructor.
+  - In main class, define interface with class UserClass and initialize in User Manager class.    
+
+*** code
+#+Begin_src java
+    public interface UserDataProvider {
+	  String getUserDB();
+    }
+
+    public class UserDB implements UserDataProvider {
+
+	@Override
+	  public String getUserDB(){
+		  return "user name in loose coupling";
+	  }
+    }
+
+  public class WebProvider implements UserDataProvider{
+
+	  @Override
+	  public String getUserDB() {
+		  return "Web data provider";
+	  }
+  }
+
+    public class UserManager {
+	  UserDataProvider udp ;
+
+	  public UserManager(UserDataProvider udp) {
+		  this.udp = udp;
+	  }
+
+	  String GetUserManager() {
+		  return udp.getUserDB(); // Usermanager is depands on UserDB
+	  }
+    }
+
+    //Main class
+    public class LooseMainClass {
+
+	  public static void main(String[] args) {
+
+	      //UserDB 
+		  UserDataProvider udp = new UserDB();
+		  UserManager userManager = new UserManager(udp);
+		  System.out.println(userManager.GetUserManager());
+
+		  // web provider
+		  UserDataProvider webProvider = new WebProvider();
+		  UserManager webUserManager = new UserManager(webProvider);
+		  System.out.println(webUserManager.GetUserManager());
+	  }
+    }
+
+#+End_src
+
+* Core Concepts of Spring
+1) *Loose coupling*
+   - It is a design principle that aims to reduce the dependencies between components within a system.
+2) *Inversion Of Control (Ioc)*
+   + It is a design principle where the control of object creation and lifecycle management is transferred from the application code to an external container or framework.
+   + In stead of using new keyword, objects are create by framework or external container.
+3) *Dependency Injection (DI)*
+   * It is a design pattern commonly used in object-oriented programming, where the dependencies of a class are provided externally rather than being created within the class itself.
+4) *Beans*
+   - Objects that are manager by framework is know as beans.
+
+* Spring Container and Configuration
+ - Spring container that can manage the life cycle of the object in spring applications.
+** Types of Spring Containers
+  - Application Context
+  - BeanFactory
+    
+*** Configuration file
+  - As a developer, we want to manage objects in spring containers.
+  - Spring containers can be manage by configuration file.
+  - some configuration defined created in our project that will be picked by spring framework.
+  - With the help of this configuration the spring container.
+   
+**** Configuration contains bean definition 
+  + create a maven project and open pom.xml
+  + type <dependencies> </dependencies> above the </Project>
+  + within the that paste the *spring core and Spring context* in mvnRepository. 
+***** Create a xml file
+  + i create *applicationFirstBean.xml* in resource file
+  + search xml bean on google and "40." link will show open it.
+  + copy beans and with write bean id and class.
+
+#+Begin_src xml
+  <?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="" class="packageName.ClassName">	</bean>
+</beans>
+#+End_src
+  
+*** create a create Mybean
+    - field -> String message
+    - Getter and Setter
+    - toString
+*** To connect the Spring container with the Class MyBean by using configuation file (ApplicationFirstBean.xml).
+#+Begin_src xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="mybean" class="les1_CreateBean.MyBean">	</bean>
+</beans>
+#+End_src
+
+*** use property to provides the values 
+#+Begin_src xml
+  <bean id="mybean" class="les1_CreateBean.MyBean">
+    <property name="message" value="my first bean"></property> 
+  </bean>
+
+#+End_src
+
+*** write main class
+#+Begin_src java
+  public class Main {
+		public static void main(String[] args) {
+			ApplicationContext m = new ClassPathXmlApplicationContext("a.xml");
+			MyBean myBean =(MyBean) m.getBean("mybean"); // mybean is the bean id
+			System.out.println(myBean);
+		}
+}
+
+#+End_src
+**** output
+ my first bean
+
+*** if we don't have setter then it shows exceptions 

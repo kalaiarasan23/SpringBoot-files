@@ -1,0 +1,140 @@
+* Internet vs Web
+1) Internet - Internet is a global network of computer connected various technologies including cables and wireless connections.
+2) web is WWW(World Wide Web) is a way of accessing information over the medium of the Internet.
+   - This particularly invloves the usage of browsers to view web pages that are linked to other using called as hyperlinks
+     
+* Working of internet or web (working on client server model)
+  - client are link browser used to access different web sites.
+  - This client sent the request to the server.
+  - and also recieves the responces.
+  - *Server* is a computer, designed to process the request from the client
+  - and reponses sent to client over the internet and network.
+
+** working
+  + type URL(Uniform Resource locator) is a URI which identities the website or resource that you want to access over the internet.
+  + URL translate into ip address of the domain name
+
+*** Domain name system(DNS)
+  1) when domain into ip and ip address back to domain name is called DNS.
+  2) can see in what is my dns, see the website and location.
+ 
+* Client and Server
+** Client
+ - A device or app that requests services or resources from a server.
+ - Client is a web browser that user interact with to access web pages.
+ - clent can be any other software like email client or mobile app.
+
+*** Characteristics of a client
+   + User Interface
+   + Requests services
+   + Receives data
+
+** Server
+  - Computer program or device or application that provides services or resources to clients.
+  - A server is designed to handle requests from multiple clients.
+  - A server hosts websites and respond to requests.
+
+*** Characteristics of a server
+  + Always on and serve us
+  + Handles Multiple Requests, process and traffic and sent back data to user
+
+* What is APIs
+  - Its a set of rules or protocols that allow one software application to interact with another.
+  - Its the format or a way in which two software applications can communicate with eachother.
+** type of API
+   1) private 
+   2) partner
+   3) public (can create that based apps like twitter)
+** Need
+   + Reduces manual effort
+* Types  of API Requests
+  1) Get request
+     - Retrieve or Get resources from server.
+     - used onlu to read data, cannot modify data
+  2) Post request
+     - Create resources from server
+  3) Put request
+     - Update existing resources on server. 200 404 400
+  4) Delete request
+     - Used to delete resources from server 200 404 400
+
+* REST API and Architecture
+  - REST (Representational State Transfer Application Programming interface).
+  - Popular way to design Networked application.
+  - It uses HTTP requests to access and use data.
+  - Sent by HTTP and received generally in the form of JSON or XML(REPRESENTING DATA).
+** REST IS STATELESS
+  + EACH REQUEST FROM THE CLIENT TO SERVER MUST CONTAIN ALL THE INFORMATION
+  + THAT SERVER NEEDS TO UNDERSTAND THE REQUEST.
+  + SERVER DOES NOT STORE ANY STATE ABOUT THE CLIENT'S SESSION ON THE SERVER SIDE.
+  + *SERVER WON'T KNOW WHO THE CLIENT*
+*** PRINCIPLES OF REST API
+   1) CLIENT-SERVER ARCHITECTURE
+   2) STATELESS
+   3) CAN BE CACHED
+   4) OPAQUE IN TERM OF LAYER
+   5) UNIFORM INTERFACE
+**** WEB SERVICES BUILT FOLLOWING THE REST ARCHITECTURAL STYLE ARE KNOW AS RESTFUL WEB SERVICES
+***** COMMON METHODS ARE USED IN REST
+   1) GET
+   2) POST --> NEW
+   3) PUT
+   4) DELETE
+***** BENFITIES
+ - SIMPLICITY
+ - SCALABILTIY
+ - FLEXIBLITY
+ - VISIBILITY
+
+* HTTP VS HTTPS
+|------+------------------------------+----------------------------------------------|
+| S.NO | HTTP                         | HTTPS                                        |
+|------+------------------------------+----------------------------------------------|
+|    1 | HYPERTEXT TRANSVER PROTOCALL | HYPERTEXT TRANSVER PROTOCALL SECURE          |
+|    2 | HTTP IS NOT SECURITY         | HTTP WITH SECURITY AND MORE COMMONLY WORKING |
+|------+------------------------------+----------------------------------------------|
+
+** HTTP and HTTPS
+  1) Both HTTP and HTTPS are protocols designed for transferring hypertext across the WWW.
+  2) They operate based on client-server model.
+  3) Both protocols use similar methods to perform actions on the web server as well as status codes.
+  4) Both are stateless protocols, meaning they do not inherently remember anything about prevoius web session.
+  5) They can transfer data in various formats including HTML, XML, JSON and plain text.
+     
+* Status Code
+** Classification of status code
+   1) 1xx (Informational)
+   2) 2xx (Successful)
+   3) 3xx (Redirection)
+   4) 4xx (client)
+   5) 5xx (server)
+
+* Resource, URI and Sub-Resource
+** Resource
+  - A Resource is any piece of information that can be named or identified on the web.
+  - Can represent any type of object, data or service that can be accessed by clients.
+  - A resource is not just limited to documents or files.
+  - It can be anything from a text file, image, collection of other resources, a non-virtual object like a person, and even abstract concepts like a service.
+    
+*** Example (Social media application)
+  + In a Social media apps, resources could include a user profile, photo, list of friends, or even a specific post or comment.
+
+** URI (Uniform Resource Identifier)
+  - A URI is a string of characters used to identify a resource on the internet either by location, name or both.
+  - It provides a mechanism for accessing the representation of a resource over the network, typically through specific protocols like HTTP or HTTPS.
+  - URIs are a broad category that includes both URLs(Uniform Resource Locators) and URNs(Uniform Resource Names).
+
+** Sub-Resource
+  - A sub-Resource is a resource that is hierarchically under another resource.
+  - It's a part of a larger resource and can be accessed by extending the URI of parent resource.
+  - sub-resource are often used in RESTful API to maintain a logical hierarchy of data and to facilitate easy access to related resources. 
+
+*** Example :
+  + In a blogging platform, you might have a users resource identified by a URI *(/users)*.
+  + A specific user could be a resource accessible at */user/{userId}*. This is a hierarchy.
+  + If each user can have blog posts, a post would be a sub-resource of that user, identified by something like /users/{UserId}/post/{postId}.
+
+* Imp of web develpment
+  -> Organization
+  -> Accessiblity
+  -> Scalability.

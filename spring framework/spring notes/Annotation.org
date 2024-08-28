@@ -1,0 +1,173 @@
+* Commonly used spring annotation
+  - @Component
+  - @AutoWired
+  - @Qualifier
+  - @Value
+  - @Repository
+  - @Service
+  - @Controller
+  - @RequestMapping
+  - @SpringBootApplication
+  
+* component 
+** Component
+  - it refers to a java class that is managed by the spring IoC container.
+  - it like bean but like autodetected and configured from class path scanning.
+** Component scanning
+  - it is a feature helps to automatically detect and register beans from predefined package paths.
+    
+** code explaination
+  1) create a Employee class as @Component with Field( id, fName, lName, salary), getter and setter, toString().
+  2) Main Class as ApplicationContext as ClassPathXmlApplicationContext then Employee as context.getBean("Employee",Employee.class) and print toString().
+  3) Create a XML file and paste the boilerPlate code.
+     - Search for ComponentScan xml on google.
+     - open the offical link and scroll down.
+     - copy the xml and paste in xml file of our project and change the base-package.
+       #+Begin_src xml
+		  <?xml version="1.0" encoding="UTF-8"?>
+	 <beans xmlns="http://www.springframework.org/schema/beans"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns:context="http://www.springframework.org/schema/context"
+		 xsi:schemaLocation="http://www.springframework.org/schema/beans
+			 https://www.springframework.org/schema/beans/spring-beans.xsd
+			 http://www.springframework.org/schema/context
+			 https://www.springframework.org/schema/context/spring-context.xsd">
+
+		 <context:component-scan base-package="packageNameOnly"/>
+
+	 </beans>
+       #+End_src
+  4) I got error in xml file "Downloading external resources is disabled.".
+     - I overcome by Go to Window > Preferences > Maven > Download repository index updates on startup and Automatically update Maven projects. Make sure these options are checked, In STS.      
+      
+**** Code
+#+Begin_src xml
+    <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xmlns:context="http://www.springframework.org/schema/context"
+	  xsi:schemaLocation="http://www.springframework.org/schema/beans
+		  https://www.springframework.org/schema/beans/spring-beans.xsd
+		  http://www.springframework.org/schema/context
+		  https://www.springframework.org/schema/context/spring-context.xsd">
+
+	  <context:component-scan base-package="com.example.componentScan"/>
+
+  </beans>
+#+End_src
+
+#+Begin_src java
+      @Component
+    public class Employee {
+	    private int employeeId;
+	    private String firstName,LastName;
+	    private double salary;
+	
+	    public int getEmployeeId() {
+		    return employeeId;
+	    }
+	
+	    public void setEmployeeId(int employeeId) {
+		    this.employeeId = employeeId;
+	    }
+	
+	    public String getFirstName() {
+		    return firstName;
+	    }
+	
+	    public void setFirstName(String firstName) {
+		    this.firstName = firstName;
+	    }
+	
+	    public String getLastName() {
+		    return LastName;
+	    }
+	
+	    public void setLastName(String lastName) {
+		    LastName = lastName;
+	    }
+	
+	    public double getSalary() {
+		    return salary;
+	    }
+	
+	    public void setSalary(double salary) {
+		    this.salary = salary;
+	    }
+	
+	    @Override
+	    public String toString() {
+		    return "Employee [employeeId=" + employeeId + ", firstName=" + firstName + ", LastName=" + LastName
+				    + ", salary=" + salary + "]\n";
+	    }
+	
+    }
+
+    public class AnnotationApplication {
+
+	  public static void main(String[] args) {
+		  ApplicationContext context = new ClassPathXmlApplicationContext("componentScan.xml");
+		  Employee employee = context.getBean("employee",Employee.class);
+		  System.out.println(employee.toString());
+	  }
+  }
+
+#+End_src
+
+*** In above code we can get output but we didn't initialize it.
+    - Use @value annotation.
+**** code
+#+Begin_src
+  @Component("employee")
+  public class Employee {
+	private int employeeId;
+    @Value("hello")
+	private String firstName;
+    @Value("${java.home}") // it will show the jre path like this LastName=/home/kalaiarasan/Music/sts-4.21.0.RELEASE/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.linux.x86_64_17.0.9.v20231028-0858/jre
+	private String lastName;
+    @Value()
+	private double salary;
+  }
+  
+#+End_src
+
+** Other method
+  - use @Component("employee") -> the "employee" is from context.getBean("employee").
+  - The name ("employee") should be same as className ("Employee").
+  - But first Letter should be small letter.
+  - eg. Employee is class name and bean name is employee.
+  - If we change the "employee" -> "employee1". It will show error.
+    
+* Transition from XML to Annotations
+   + Create a class as AppConfig.
+   + This will be the configuration class so this class won't have any methods of field
+   + Because the purpose of this class is just to have the configuration.
+   + We are providing configuration using annotations @ComponentScan(basePackages = "packageName").
+   + Component scan do annotation so this is a new package that I have created okay which has the file right so we have defined.
+   + The annotation now what we need to tell spring that hey you need to refer to this class for all the configuration.
+   + So we use @Configuration.
+   + We said this class is configuration class and load configuration from this path(ComponentScan()).
+   + No need for xml file.
+     
+** update the main class
+   - use AnnotationConfigApplicationContext as ApplicationContext, Inside use specify the class name.class.
+
+*** Code
+#+Begin_src java
+  @Configuration
+  @ComponentScan(basePackages = "com.example.TransitionToAnnotation")
+  public class AppConfig {
+
+  }
+
+  // main class
+  public class AnnotationApplication {
+
+	public static void main(String[] args) {
+		ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+		Employee employee = context.getBean("employee",Employee.class);
+		System.out.println(employee.toString());
+	}
+  }
+
+#+End_src

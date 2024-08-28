@@ -1,0 +1,10 @@
+* Application Properties
+    + Inside resources file (application.properties)
+    + We can create .yml in steard of application.properties.
+      
+** Example (write inside application.properties)
+  - server.port=8081 (the server port change to 8081)
+    
+** application.properties can be overridden by command line arguments
+
+* PostRequest

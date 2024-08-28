@@ -1,0 +1,272 @@
+* Inversion of Control
+  - We take the loose coupling example here.
+** Create the xml file in resource folder.
+ 1) Add boiler plate code
+ 2) create bean for three class NewDBProvider, UserDBProvider, WebDBProvider.
+    <bean id="bean1" class="package.className" >
+    #+Begin_src java
+      <bean id="userDataProvider" class="com.looseCoupling.ioc.UserDBProvider" />
+
+      <bean id="newDataProvider" class="com.looseCoupling.ioc.newDBProvider" />
+
+      <bean id="webProvider" class="com.looseCoupling.ioc.WebProvider" />
+    #+End_src
+ 3) ref that above beans in bean UserManager Class as Constructor injection
+    #+Begin_src java
+      <bean id="UserMangerForUserDBProvider" class="com.looseCoupling.ioc.UserManager">
+	      <constructor-arg ref="userDBProvider"></constructor-arg>
+      </bean>
+
+      <bean id="UserMangerForNewDBProvider" class="com.looseCoupling.ioc.UserManager">
+	      <constructor-arg ref="newDBProvider"></constructor-arg>
+      </bean>
+
+      <bean id="UserMangerForWebProvider" class="com.looseCoupling.ioc.UserManager">
+	      <constructor-arg ref="webProvider"></constructor-arg>
+      </bean>
+    #+End_src
+ 4) Go to main file and config the xml file with context file.
+    #+Begin_src java
+      ApplicationContext newDBProvider = new ClassPathXmlApplicationContext("ioc.xml");
+		UserManager newDBManager = (UserManager) newDBProvider.getBean("UserMangerForNewDBProvider");
+		System.out.println(newDBManager.getUserManager());
+
+		ApplicationContext userDBProvider = new ClassPathXmlApplicationContext("ioc.xml");
+		UserManager userDBManager = (UserManager) newDBProvider.getBean("UserMangerForUserDBProvider");
+		System.out.println(userDBManager.getUserManager());
+    #+End_src
+
+*** what happen here
+  - spring operates the objects here, we just request the object
+
+*** full code
+#+Begin_src xml
+  <?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+<bean id="userDBProvider" class="com.looseCoupling.ioc.UserDBProvider" />
+
+<bean id="newDBProvider" class="com.looseCoupling.ioc.NewDBProvider" />
+
+<bean id="webProvider" class="com.looseCoupling.ioc.WebProvider" />
+
+<bean id="UserMangerForUserDBProvider" class="com.looseCoupling.ioc.UserManager">
+	<constructor-arg ref="userDBProvider"></constructor-arg>
+</bean>
+
+<bean id="UserMangerForNewDBProvider" class="com.looseCoupling.ioc.UserManager">
+	<constructor-arg ref="newDBProvider"></constructor-arg>
+</bean>
+
+<bean id="UserMangerForWebProvider" class="com.looseCoupling.ioc.UserManager">
+	<constructor-arg ref="webProvider"></constructor-arg>
+</bean>
+
+</beans>
+#+End_src
+
+
+  #+Begin_src java
+	public class LooseMainClass {
+
+	    public static void main(String[] args) {
+		// manual create of beans 
+		    UserDataProvider udp = new UserDBProvider();
+		    UserManager userManager = new UserManager(udp);
+		    System.out.println(userManager.getUserManager());
+		
+		    UserDataProvider webProvider = new WebProvider();
+		    UserManager webUserManager = new UserManager(webProvider);
+		    System.out.println(webUserManager.getUserManager());
+		// spring create bean from IOC, we just ref as DI of construction injection
+		    ApplicationContext newDBProvider = new ClassPathXmlApplicationContext("ioc.xml");
+		    UserManager newDBManager = (UserManager) newDBProvider.getBean("UserMangerForNewDBProvider");
+		    System.out.println(newDBManager.getUserManager());
+
+		    ApplicationContext userDBProvider = new ClassPathXmlApplicationContext("ioc.xml");
+		    UserManager userDBManager = (UserManager) newDBProvider.getBean("UserMangerForUserDBProvider");
+		    System.out.println(userDBManager.getUserManager());	
+	    }
+    }
+#+End_src
+
+* Intro of AutoWiring
+    + we are use xml to defining the dependencies within the java classes.
+    + Spring has a feature is called autowiring.
+    + It automatically resolves and injects dependencies b/w beans without requiring explicit wiring definitions in XML or java configurations.
+
+** Types of AutoWiring
+  - By type (field type)
+  - By name (field name)
+  - By constructor
+
+* By name
+ - We take example from construction injection.
+ - copy the xml file and rename that file.
+ - remove the construction injection and use AutoWire.
+ - AutoWire has lot of values i.e byName, byType, constructor, default, no.
+ - We are use *byName* here.
+
+#+Begin_src xml
+    <bean id="carSpecification" class="com.example.autowire.name.Specification">
+	  <property name="make" value="Toyota" />
+	  <property name="model" value="Corolla"/>
+    </bean>
+
+    <bean id="Car" class="com.example.autowire.name.Car" autowire="byName"/>
+#+End_src
+ 
+** how byName is work
+   - whatever dependencies car class needs.
+   - Please autowire them by name,
+   - Spring will go to car class, It has one class that need byName as specification in Car class.
+   - The car field name(Specification specification) and xml file Specification bean id are same (<bean id="specification">). 
+   - Delete the constructor in Car class.
+   - *Create setter for Specification in Car Class*
+
+*** code
+#+Begin_src xml
+    <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+	  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="sp" class="com.example.autowire.name.Specification">
+	  <property name="make" value="Toyota" />
+	  <property name="model" value="Corolla"/>
+  </bean>
+
+  <bean id="myCar" class="com.example.autowire.name.Car" autowire="byName"/> // here difference
+
+  </beans>
+#+End_src
+
+#+Begin_src java
+	public class Car {
+	      Specification sp ;
+
+	      public void setSp(Specification sp) {    // remove constructor and put setter
+		      this.sp = sp;
+	      }
+
+	      void printDetail() {
+		      System.out.println("car details "+sp.toString());
+	      }
+      }
+
+      // Specification class
+      public class Specification {
+
+	    String make,model;
+
+	    public String getMake() {
+		    return make;
+	    }
+
+	    public void setMake(String make) {
+		    this.make = make;
+	    }
+
+	    public String getModel() {
+		    return model;
+	    }
+
+	    public void setModel(String model) {
+		    this.model = model;
+	    }
+
+	    @Override
+	    public String toString() {
+		    return "Specification [make=" + make + ", model=" + model + "]\n";
+	    }
+    }
+
+    // main class
+    public class Main {
+
+	  public static void main(String[] args) {
+		  ApplicationContext context = new ClassPathXmlApplicationContext("autoWiringByName.xml");
+		  Car myCar = (Car) context.getBean("myCar");
+		  myCar.printDetail();
+	  }
+  }
+  
+#+End_src
+
+* By Type
+  - Here same above example by id is not matter.
+  - It will see the type and inject.
+** change
+#+Begin_src xml
+    <bean id="carSpecification" class="com.example.autowire.name.Specification">
+	  <property name="make" value="Toyota" />
+	  <property name="model" value="Corolla"/>
+    </bean>
+
+    <bean id="Car" class="com.example.autowire.name.Car" autowire="byName"/>
+#+End_src
+*** code
+#+Begin_src xml
+    <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+	  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="sp" class="com.example.autowire.name.Specification">
+	  <property name="make" value="Toyota" />
+	  <property name="model" value="Corolla"/>
+  </bean>
+
+  <bean id="myCar" class="com.example.autowire.name.Car" autowire="byType"/> // here difference
+
+  </beans>
+#+End_src
+
+#+Begin_src java
+	public class Car {
+	      Specification sp ;
+
+	      public void setSp(Specification sp) {    // remove constructor and put setter
+		      this.sp = sp;
+	      }
+
+	      void printDetail() {
+		      System.out.println("car details "+sp.toString());
+	      }
+      }
+
+      // Specification class
+      public class Specification {
+
+	    String make,model;
+
+	    public String getMake() {
+		    return make;
+	    }
+
+	    public void setMake(String make) {
+		    this.make = make;
+	    }
+
+	    public String getModel() {
+		    return model;
+	    }
+
+	    public void setModel(String model) {
+		    this.model = model;
+	    }
+
+	    @Override
+	    public String toString() {
+		    return "Specification [make=" + make + ", model=" + model + "]\n";
+	    }
+    }
+#+End_src
+
+* by Constructor

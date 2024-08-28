@@ -1,0 +1,142 @@
+* Spring boot
+   - Open source, java based framework used to create stand-alone, production-grade spring-based Applications.
+   - Spring based web framework asnd runs on java.
+** d/b spring and springBoot
+Spring                                                                                                                                                                                                                                                     
+     Lots of steps involved in setting up, configuration, writing boilerplate code, deployment of the app
+Spring boot
+     Offers a set of pre-configured components or defaults, and eliminating the need for a lot of boilerplate code that was involved in setting up a Spring application 
+
+** Spring boot = Spring frameWork + prebuilt configuration + Embedded servers.     
+  - To running an Application we need server. It inbuilt in spring boot.
+** Component of spring boot
+   1) Spring Boot Starter
+   2) Auto Configuration
+   3) Spring Boot Actutor. (monitor the application)
+   4) Embedded server (Apache Tomcat or Jetty and it allows you to run your application as a execute Standalone java file)
+   5) Spring Boot DevTools
+
+** Adv of spring Boot
+  + Stand Alone and quick start
+  + Starter code
+  + less configuration
+  + Reduced code and application development time
+
+** Why do 
+    - java based
+    - Fast, easy
+    - Comes with embedded server
+    - Various plugins
+    - Avoid boilerplate code and configurations
+
+* Spring boot Architecture
+   + spring boot has a layered architecture which one layer will communicate with the other layer.
+
+** Different tiers
+  1) Presentation layer
+  2) service layer
+  3) data access layer
+
+*** Presentation layer
+  + It presents the data and the application features to the user.
+  + It has all controller classes exist.
+  + Controller accept the request from the user, validates and passes to the service layer.
+
+*** service layer
+  + Service layer is where business logic resides in the application.
+  + Tasks such as evaluations, decision making, processing of data is done at this layer.
+  + This layer also interacting with both presentation and data access layer.  
+   
+*** Data access layer
+  - it has all the repository classes reside.
+  - This repository classes are responsible for interacting with the databases like proforming CRUD operation.
+  - done by relation database or no SQL DB.
+
+** Library management system
+
+browser <--> controller <--> service <--> Repository <--> database
+
+Your application are Controller,service, repository and database.
+
+  1) We have browser, The user will interact with application.
+  2) User sending request that request will received by the controller.
+  3) Controller forward to service layer. service layer has business logic.
+  4) The service layer classes interact with the repository classes.
+  5) repository interact with the database.
+
+* Spring Initializr
+  + It is tool that enables to create spring boot project.
+  + snapshot version are pre-release version of spring boot.
+  + It is still under development.
+  + It is incomplete and might bugs and other issues.
+
+** https://start.spring.io/ is the link of spring initializr
+ 1) Project - Maven
+ 2) Group - package name, this is reverser of domain name
+ 3) Artifact - name of the project
+ 4) Packaging (war or jar) - jar is standalone project and war is web-based project.
+ 5) Add Dependencies- add spring web
+ 4) Click generate
+       
+**  open the project on IDE
+  - open the IDE (i use STS).
+  - left-top click files and open project with file system.
+  - copy the path and paste in import source.
+  - click finsh.
+
+** Files and folder in that project
+  1) Src - all the src code are stored in this folder.
+  2) Resources
+     1. static  -  html pages
+     2. templates  - 
+     3. application.properties - it has addition details or information.
+  3) test - some of the test case can be written inside the .Test files.
+  4) pom.xml - maven file, it has all dependencies of spring boot has be specified 
+     
+*** @SpringBootApplication -> @SpringBootConfiguration and @EnableAutoConfiguration and @ComponentScan
+
+* Dependencies
+  - It is an external libaries or modules that application would need to function properly.
+  - Spring boot makes use of maven or gradle build system to manage the dependencies.
+** Maven vs spring
+  - maven has all version and many dependencies
+  - spring initializer has only stable version and popular dependencies. It can be maintain by spring team and community.
+    
+* Create a first API hello world
+  - Create a Class HelloController, use @RestController. It is specialized version of controller annotation. 
+  - @RestController means that ready to use spring MVC to handle web request. For RESTApi also use this annotation.
+  - Create Get mapping method. Use @GetMapping to map this method. we can get parameter ("/hello");
+  - If we enter localhost:8080/hello -> springboot will start execute the logic inside the method.
+#+Begin_src java
+    @RestController
+    public class HelloController {
+	
+	  @GetMapping("/hello")
+	  public String hello() {
+		  return "hello world in get map";
+	  }
+    }
+#+End_src
+
+*** @RestController interface has two annotations @Controller and @ResponseBody.
+
+** After run the application
+   1) Spring Boot (v.3.3.3)
+   2) Starting fileName using java version with FilePath
+   3) active Profile (.properties or .yml)
+   4) server with port number (http)
+   5) when we enter DomainName:portNo/hello --> it return the string as packets and response to browser.
+
+* SpringBoot AutoConfiguration
+  1) Example of AutoConfiguration server 8080.
+  2) Initializing Servlet 'dispatcherServlet', it is the heart of any spring MVC application.
+     - It routes incoming requests to the controller methods.
+     - Spring boot take care of configuring this dispatcher serlet.
+     - it auto config this serlet and it saves the effort of setting it up ourself.
+  3) @RestController at the class level that class is a controller and handle the HTTP request.
+     + Bean is created in application context.
+     + being mapped to the controller.
+     + then @GetMapping("/hello") will automatically Maps this method, when you enter the URL inside @GetMapping.
+
+  4) Default Error Mapping
+     - if we try to access not specified url. Spring boot automatically throw an error. We can modified this page.      

@@ -1,0 +1,18 @@
+* @SpringBootApplication
+* @Controller
+* @Component
+* @ComponentScan
+* @AutoWiring
+* @AutoWire
+* @RestController
+* @Configuration
+* @value
+* @Qualifier 
+* @GetMapping
+* @PostMapping
+* @DeleteMapping
+
+* Method Parameter annotation
+** @PathVariable
+** @RequestParam
+** @RequestBody
