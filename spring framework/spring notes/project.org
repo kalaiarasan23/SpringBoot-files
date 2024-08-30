@@ -1,0 +1,170 @@
+* Project
+** Spring initializr
+   1) maven
+   2) sprind Boot standed version
+   3) Group name --> package name
+   4) Artifact id --> project name
+   5) Description
+   6) add Dependencies - spring web
+   7) Click generate and download the file
+   8) Extract the file.
+
+** Import this project
+  1) Open STS and left-corner click file --> Open project from file system.
+  2) click Directory on right side. Locate the path of the downloaded file.
+  3) Your file will be show inside the small window. Now Click finish.
+
+* Structuring Thoughts
+  1. We have browser or any client devices(laptop or mobile), which makes request to our application.
+  2. Within the application, There are Controller category and Service category.
+  3. Whenever the request come from the client, first it handle by controller.
+  4. Then the request is forward to the service.(In addition database and repository are their)
+  5. Then the reponse goes back to the browser.
+  6. This all hoisted on the server.
+   
+** Category module
+|----------+------------------------------------+--------+-------------------------------+--------------+------------------------------------------+------------------|
+| API Name | Endpoint                           | Method | Purpose                       | Request Body | Request Parameters                       | Response         |
+|----------+------------------------------------+--------+-------------------------------+--------------+------------------------------------------+------------------|
+| Create   | /api/admin/category                | POST   | Create a new category         | category     | None                                     | CategoryDTO      |
+| Get      | /api/public/categories             | Get    | Retrieve a list of categories | none         | PageNumber, PageSize, Sort By, sortOrder | CategoryResponse |
+| Update   | /api/admin/categories/{categoryId} | PUT    | Update an existing categories | Category     | categoryId                               | CategoryDTO      |
+| delete   | /api/admin/categories/{categoryId} | DELETE | Delete an existing categories | none         | categoryId                               | CategoryDTO      |
+|----------+------------------------------------+--------+-------------------------------+--------------+------------------------------------------+------------------|
+
+* Fetching All categories
+ - Open our project, create a controller for fetching all the categoires and also need a model.
+ - Model the used to represent the category.
+
+** Code explaination.
+*** create a Category class as model directory, ie. model inside Category class.
+   + Create a field Long categoryId and String categoryName and create getter and setter;
+   #+Begin_src java
+     public class Category {
+	private Long categoryId;
+	private String categoryName;
+
+	 //getter and setter and toString methods
+     }
+   #+End_src
+*** create a ControllerCategory class as controller directory, ie. controller folder inside ControllerCategory.class.
+   1. Mark this class as @RestController and Create a list<Category> as field.
+   2. create a method which return type List<Categories>  and return above list
+      + mark it as @GetMapping("/api/public/categories")
+	#+Begin_src java
+	 public class ControllerCategory {
+	     private List<Category> category= new ArrayList<>();
+	
+		  @GetMapping("/api/public/category")
+		  public List<Category> categoryMethod(){
+			  return category;
+		  }
+	 }
+	#+End_src
+
+* We can the our applcation on Postman
+  - Create a new collection (press +) --> click blank collection --> enter the name.
+  - On left side navication bar. press Add a request and type name.
+  - Enter the URL, and sent.
+  - The Status code must be 200 OK.
+
+** error comes with url
+   + enter the right url
+   + @RestController on the top of controller class.
+
+* Add new Category by using @PostMapping
+  + Create a method inside the controller class with parameter as Category with @RequestBody
+  + return String for confirmation message.
+  + add the category into the list.
+    
+** Code
+#+Begin_src java
+  	@PostMapping("/api/public/category")
+	public String addCategory(@RequestBody Category category) {
+		categoryList.add(category);
+		return "category added";
+	}
+#+End_src
+
+* Service layer
+  - In above project we didn't add service layer.
+  - Service layer is used for writing business logic.
+  - Create an interface which can promote loose coupling and modularity.
+
+** Serice class 
+     + Service Class implements that interface and include the methods.
+     + @Service annotation is used on the Service class.
+     + Cut the list in controller class and paste in Service class.
+       
+** Controller class
+        - Create Interface as field and use @Autowire to field inject the service class.
+	- call the method inside the corresponding method. 
+
+*** Code
+#+Begin_src java
+    // Service interface
+    public interface CategoryService {
+	  List<Category> getCategory();
+	  void addCategory(Category c);
+    }
+
+    // Service class
+  @Service // it is used for bean creation in RestController class
+    public class CategoryServiceImp implements CategoryService {
+	  private List<Category> categoryList= new ArrayList<>();
+
+	  @Override
+	  public List<Category> getCategory() {
+		  return categoryList;
+	  }
+
+	  @Override
+	  public void addCategory(Category c) {
+		  categoryList.add(c);
+	  }
+  }
+
+  // RestController class
+  
+#+End_src
+    
+* Managing ID's (AutoGenerate the ID)
+
+* DeleteMapping
+  + changes in controller and serviceInterface and serviceImp
+** code
+#+Begin_src java
+    //Add method on interface
+	  String deleteCategory(Long id);
+
+    // Implement that method on serviceImpl class
+	  @Override
+	  public String deleteCategory(Long id) {
+  //		categoryList.remove((id-1)); //this is in efficient way of implementation
+	    Category c = categoryList.stream()
+			    .filter(s -> s.getId().equals(id))
+			    .findFirst() 
+			    .orElse(null); // or use get()
+		  categoryList.remove(c);
+		  return c+" from DB";
+	  }
+
+  // assign @DeleteMapping in RestController
+	@DeleteMapping("api/public/category/{id}")
+	public String deleteCategory(@PathVariable Long id) {
+		categoryService.deleteCategory(id);
+		return id+" deleted";
+	}
+#+End_src
+
+** how to handle if the id is not found
+   + After findFirstId() use .orElse(null).
+   + use Optional class, it can handle NullPointerException.
+   + Simple use if statement if the result is null or not.
+
+* ResponseEntity Class
+  + When we give wrong id in above deleteMapping code it give expanded output but it doesn't reflect on status code.
+  + So we intro the ResponseEntity.
+  + It wrapper in Spring that represents the entire HTTP response.
+  + In java, it can represent the entire response (like header, status code).
+  + we use for customize these status code and customize response.
