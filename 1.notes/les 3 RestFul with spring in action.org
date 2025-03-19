@@ -215,7 +215,7 @@ public record OrderRecord(
 ** @GetMapping("/hello/{user-name}")
    - public String pathVar(@pathVariable("user-name") String username) {return "my value = "+username;}
 *** code 
-#Begin_Src java
+#+Begin_Src java
 // controller class localhost:8080/hello?name=raj&fName=ram  
 	public String pathVar2(@RequestParam("name") String fName, @RequestParam("lName") String lName) {
 		return "my value "+ fName +" lastName "+lName;
