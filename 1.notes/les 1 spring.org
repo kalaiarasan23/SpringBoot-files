@@ -32,26 +32,26 @@
     - This allows the controller to process the request create the model and then provide the information for the end user via a specified.
 
 ** Spring bean
-**** Object
+*** Object
     - An object that is managed by the spring framework in java application.
     - Spring bean refers to object.
     - The term bean is used in the context of the spring framework.
 
-**** Features
+*** Features
     - Aims to simplify the complex enterprise java application development.
     - the spring framework creates these beans manage their life cycle and organizes their dependencies with other beans.
     - It takes care of the instantiation configuration and wiring up of objects
     - saving developers from a lot of manual.
 
-**** Configuration
+*** Configuration
     - Spring Beans can be configured using XML, java annotations or java code.
 
-*** Life cycle of a Spring Bean
+** Life cycle of a Spring Bean
 
-**** Object lifecycle
+*** Object lifecycle
      - The lifecycle of any object means when and how it is born, how it behaves throughout its life,and when and how it dies.
 
-**** Bean LifeCycle
+*** Bean LifeCycle
      - Bean life cycle is managed by the spring container.
      - When we run the program, 
        - the first of all the spring container gets started
@@ -299,7 +299,7 @@ public class DefaultPaymentService {
       - This scope only valid only in the context of webware spring application context for the life cycle of a websocket.
       - The Bean is scoped at the web socket level.
       - So, Bean scoping is really important, if you want to correctly manage your bean.
-
+	
 ** Special spring beans
 *** Enviroment Abstraction
 *** Bean Profiles

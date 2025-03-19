@@ -62,7 +62,6 @@
    - 200 - ok - successfully
    - 201 - create - successfully and create new resource
    - 204 - no content - successfully process in server but no content in server. (After delete request when we put or post request)
-
 ** 3xx - Redirection Category
    - 304 - not modified - 
 
@@ -119,7 +118,7 @@ public class FirstController {
     - Text
     - name
    
-*** still null. So we should add @RequestBody in method
+*** still null. So we should add @RequestBody in method parameter
 #+BEGIN_SRC java
 @PostMapping("/post")
 	public String post(@RequestBody String message) // here @RequestBody
@@ -137,7 +136,7 @@ public class FirstController {
 	{
 		return "Request accepted and message "+ message ;
 	}
-#+END_SR
+#+END_SRC
 
 ** Now we can transver java object in RequestBody by POJO class
    - create a POJO class (Order) with String CustomerName,ProductName and int quantity.
