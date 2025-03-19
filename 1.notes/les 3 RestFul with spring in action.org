@@ -40,7 +40,7 @@
      | /accouts/1           | Get account with ID 1                  | Error                                    | Update account with ID 1                       | Delete account with ID 1                  |
      | /accounts/1/payments | get all payments for account with ID 1 | create new Payment for account with ID 1 | Bulk update all payments for account with ID 1 | Delete all payments for account with ID 1 |
      |----------------------+----------------------------------------+------------------------------------------+------------------------------------------------+-------------------------------------------|
-   
+     
 * HTTP Methods
   + GET - use to retrieve data from a server. It is read-only operation i.e it does not affect the state of resource.
   + POST- Sent date to a server to create a new resource. Data is include in the body of request.
