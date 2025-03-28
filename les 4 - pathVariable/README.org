@@ -8,25 +8,28 @@
 ** After that create an list<Student> for create an list
    - private static List<Student> student;
 ** static block inside add 4 student on that list
-   - static {
-   -     student = new ArrayList<>();
-   -  student.add(new Student("raj",21,"hyderabad",11));
-   -  student.add(new Student("raja",34,"hyderabad",13));
-   -  student.add(new Student("mohan",55,"hyderabad",12));
-   -  student.add(new Student("tom",65,"hyderabad",16));
-   - }
-	
+#+Begin_src java
+   static {
+        student = new ArrayList<>();
+   	student.add(new Student("raj",21,"hyderabad",11));
+   	student.add(new Student("raja",34,"hyderabad",13));
+   	student.add(new Student("mohan",55,"hyderabad",12));
+   	student.add(new Student("tom",65,"hyderabad",16));
+   }
+#+End_src	
 ** @RestController above class MainAPIPoint then @GetMapping("api")
-   - @GetMapping("api")
-   -	public List<Student> getStudent(){
-   -		return student;
-   -	}
-
+#+Begin_src java
+   @GetMapping("api")
+   	public List<Student> getStudent(){
+   	return student;
+   }
+#+End_src
 * For PathVariable @GetMapping("api/{studentId}")	
 ** pass @PathVariable("studentId" Integer id)
-   - @GetMapping("api/v2/a/{studentId}")
-   -	public Student getStudent(@PathVariable("studentId") Integer id){
-   -       return student.stream().filter(st -> st.id.equals(id))
-   -				.findFirst().orElseThrow( ()-> new IllegalArgumentException());
-   -	}
-	
+#+Begin_src java
+   @GetMapping("api/v2/a/{studentId}")
+   public Student getStudent(@PathVariable("studentId") Integer id){
+          return student.stream().filter(st -> st.id.equals(id))
+   			.findFirst().orElseThrow( ()-> new IllegalArgumentException());
+   }
+#+End_src	
