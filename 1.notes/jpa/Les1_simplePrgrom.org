@@ -1,0 +1,45 @@
+* This my first spring jpa program
+   Here we are going to connect our http, then view our request and response.
+   
+** Tools
++ PostMan (to sent our request and view our reponse)
++ STS (IDE)
+
+*** Procedure
+- We are going to create a controller class. It contains three methods
+- getName(), postName(), postName2()
+
+* Code
+#+Begin_src java
+    @RestController
+    public class ControllerClass {
+  	
+  	@GetMapping("/hello")
+  	public String getName() {
+  		return "Hello World";
+  	}
+
+  	@PostMapping("/hello2")
+  //	@ResponseStatus(code = HttpStatus.)
+  	public String postName() {
+  		return "Hello World 2";
+  	}
+  	@PostMapping("/post")
+  //	@ResponseStatus(code = HttpStatus.)
+  	public String postName2(@RequestBody String s) {
+  		return "Hello World 2 "+s;
+  	}
+  }
+#+end_src
+
+** GetName
+   It return String and can display in both browser and postman
+
+** PostName
+   It return String and can display any on postman 
+ 
+** PostName2
+   It just return the String with get a String from postman.
+   
+*** How to run this post on postman
+   + same process but this just sent a string without double quotes.

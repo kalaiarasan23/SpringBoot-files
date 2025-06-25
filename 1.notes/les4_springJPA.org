@@ -1,0 +1,67 @@
+* Spring Boot JPA (Java Persistence API)
+* Add Dependency in POM.xml
+  First we want to include dependency in pom.xml
+** Code
+#+Begin_src xml
+  <!--for JPA dependency-->
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+  </dependency>
+
+  <!-- for dB dependency for DB connection -->
+  <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+#+End_src
+
+* Connect the DB with resource/application.properties
+#+Begin_src markdown
+  #DBMS detail
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+spring.datasource.username=postgres
+spring.datasource.password=1234
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+#jpa details
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.database=postgresql
+#spring.jpa.database-platform= org.hibernate.dialect.PostgreSQLDialect	
+
+#+End_src
+
+** create a username and password with repective DB
+
+* How to use postman for HTTP methods
+  + Open the postman.
+  + Click the *Collections* in right-side bar.
+  + Click new --> HTTP.
+  + After that we can give url and give correct method
+
+** If we use @RequestParam
+*** Used for Simple String as parameter
+   - Use name without "" in it. like *Raja*.
+     #+Begin_src java
+       //URL - localhost:8080/posts
+       raja // name enter in postname
+     #+End_src
+*** Used for class as as parameter
+    Example we use Order class as parameter, that class has three fields String customerName,String ProductName, int quantity.
+    #+Begin_src java
+      // URL - localhost:8080/ports
+      {
+        "customerName": "raja",
+        "ProductName" : "pen",
+        "quantity" : 15
+       }
+    #+End_src
+** If we use post methos with @pathVariable
+   - Use name with url/{name}. url/{raja}
+     #+Begin_src java
+       // URL - localhost:8080/posts/{raja}
+       
+     #+End_src 

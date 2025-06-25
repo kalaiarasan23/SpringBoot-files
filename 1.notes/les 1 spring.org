@@ -277,7 +277,7 @@ public class DefaultPaymentService {
 *** 
 *** 
 
-**** Scope of  
+**** Scope of Bean
 ***** Singleton
       - It a default spring scope container.
       - Only one instance of the Bean is created and all requests of that bean will recieve the same instance.
